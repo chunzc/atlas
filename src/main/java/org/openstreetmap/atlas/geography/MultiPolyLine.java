@@ -1,7 +1,6 @@
 package org.openstreetmap.atlas.geography;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,7 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 /**
- * A MultiPolyLine is a set of {@link PolyLine}s in a specific order
+ * A MultiPolyLine is a set of distinct {@link PolyLine}s in a specific order
  *
  * @author yalimu
  */
@@ -57,7 +56,7 @@ public class MultiPolyLine
         {
             throw new CoreException("Cannot have an empty list of PolyLine or Polygon.");
         }
-        this.polyLineList = new ArrayList<>(polyLines);
+        this.polyLineList = polyLines.stream().distinct().collect(Collectors.toList());
     }
 
     public MultiPolyLine(final PolyLine... polyLines)
@@ -101,7 +100,7 @@ public class MultiPolyLine
         final Set<PolyLine> polyLineSet = new HashSet<>(this.polyLineList);
         final Set<PolyLine> otherPolyLineSet = new HashSet<>(otherItem.getPolyLineList());
         return otherItem.getPolyLineList().size() == this.getPolyLineList().size()
-                && new HashSet<>(polyLineSet).equals(new HashSet<>(otherPolyLineSet));
+                && polyLineSet.equals(otherPolyLineSet);
     }
 
     @Override
